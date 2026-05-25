@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useForm, ValidationError } from "@formspree/react";
 
 export default function Waitlist() {
   const ref = useRef<HTMLDivElement>(null);
-  const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [state, handleSubmit] = useForm("mykvnpop");
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -21,26 +21,6 @@ export default function Waitlist() {
     el.querySelectorAll(".reveal").forEach((r) => observer.observe(r));
     return () => observer.disconnect();
   }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setState("loading");
-    try {
-      const res = await fetch("https://formspree.io/f/mykvnpop", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      if (res.ok) {
-        setState("success");
-      } else {
-        setState("error");
-      }
-    } catch {
-      setState("error");
-    }
-  };
 
   return (
     <section id="waitlist" ref={ref} className="relative py-32 px-6">
@@ -74,7 +54,7 @@ export default function Waitlist() {
             If this aligns with what you&apos;re building, let&apos;s talk.
           </p>
 
-          {state === "success" ? (
+          {state.succeeded ? (
             <div
               className="py-6 px-8 rounded-sm"
               style={{
@@ -98,18 +78,17 @@ export default function Waitlist() {
               <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-4">
                 <input
                   type="email"
+                  name="email"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
                   className="waitlist-input flex-1 px-4 py-3 rounded-sm text-sm"
                 />
                 <button
                   type="submit"
-                  disabled={state === "loading"}
+                  disabled={state.submitting}
                   className="btn-primary px-6 py-3 rounded-sm text-sm font-semibold flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {state === "loading" ? (
+                  {state.submitting ? (
                     <span className="flex items-center gap-2">
                       <svg
                         className="animate-spin"
@@ -134,9 +113,11 @@ export default function Waitlist() {
                   )}
                 </button>
               </div>
-              {state === "error" && (
-                <p className="text-red-400 text-xs">Something went wrong. Try again.</p>
-              )}
+              <ValidationError
+                field="email"
+                errors={state.errors}
+                className="text-red-400 text-xs"
+              />
             </form>
           )}
 
