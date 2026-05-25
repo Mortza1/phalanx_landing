@@ -26,9 +26,20 @@ export default function Waitlist() {
     e.preventDefault();
     if (!email) return;
     setState("loading");
-    // Simulate async — replace with actual API call
-    await new Promise((r) => setTimeout(r, 800));
-    setState("success");
+    try {
+      const res = await fetch("https://formspree.io/f/mykvnpop", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setState("success");
+      } else {
+        setState("error");
+      }
+    } catch {
+      setState("error");
+    }
   };
 
   return (
