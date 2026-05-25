@@ -1,0 +1,277 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0B0F14;
+  --bg-secondary: #111820;
+  --accent-steel: #38BDF8;
+  --accent-teal: #2DD4BF;
+  --text-primary: #E2E8F0;
+  --text-secondary: #94A3B8;
+  --border-subtle: rgba(56, 189, 248, 0.12);
+  --border-mid: rgba(56, 189, 248, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animated grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridFade 8s ease-in-out infinite alternate;
+}
+
+/* Noise texture overlay */
+.noise::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Reveal animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Flow line animation */
+@keyframes flowDown {
+  0% { opacity: 0; stroke-dashoffset: 100; }
+  30% { opacity: 1; }
+  100% { opacity: 0; stroke-dashoffset: 0; }
+}
+
+@keyframes flowUp {
+  0% { opacity: 0; stroke-dashoffset: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; stroke-dashoffset: 100; }
+}
+
+@keyframes gridFade {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+@keyframes nodePulse {
+  0%, 100% { opacity: 0.4; r: 3; }
+  50% { opacity: 1; r: 4.5; }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-2px); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1.2s step-end infinite;
+}
+
+/* Terminal log styles */
+.terminal-line {
+  font-family: var(--font-geist-mono), 'Courier New', monospace;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: #64748B;
+}
+
+.terminal-line .timestamp {
+  color: #334155;
+  margin-right: 1rem;
+  user-select: none;
+}
+
+.terminal-line .status-done { color: #2DD4BF; }
+.terminal-line .status-wip { color: #38BDF8; }
+.terminal-line .status-next { color: #475569; }
+.terminal-line .status-label {
+  display: inline-block;
+  width: 6rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Architecture diagram */
+.arch-layer {
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  position: relative;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.arch-layer:hover {
+  border-color: var(--border-mid);
+  background-color: rgba(56, 189, 248, 0.03);
+}
+
+.arch-layer.highlighted {
+  border-color: rgba(56, 189, 248, 0.35);
+  background-color: rgba(56, 189, 248, 0.04);
+}
+
+/* Node graph dots */
+.node-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-steel);
+  animation: nodePulse 2s ease-in-out infinite;
+}
+
+/* Subtle gradient separator */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.15), transparent);
+}
+
+/* Card hover states */
+.problem-card {
+  border: 1px solid rgba(255,255,255,0.04);
+  background: rgba(17, 24, 32, 0.6);
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+}
+
+.problem-card:hover {
+  border-color: rgba(56, 189, 248, 0.15);
+  background: rgba(17, 24, 32, 0.9);
+  transform: translateY(-2px);
+}
+
+/* Waitlist input */
+.waitlist-input {
+  background: rgba(17, 24, 32, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.waitlist-input:focus {
+  outline: none;
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.08);
+}
+
+.waitlist-input::placeholder {
+  color: #475569;
+}
+
+/* Button styles */
+.btn-primary {
+  background: #38BDF8;
+  color: #060A0F;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #60A5FA;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #93C5FD;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-ghost:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.05);
+}
+
+/* SVG flow animations */
+.flow-path {
+  stroke-dasharray: 8 4;
+  animation: flowDown 3s ease-in-out infinite;
+}
+
+.flow-path-up {
+  stroke-dasharray: 8 4;
+  animation: flowUp 3s ease-in-out infinite;
+}
+
+/* Nav */
+.nav-blur {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(6, 10, 15, 0.8);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.08);
+}
+
+/* Radial gradient glow */
+.hero-glow {
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
+}
+
+.section-glow-left {
+  background: radial-gradient(ellipse 60% 80% at -10% 50%, rgba(56, 189, 248, 0.05) 0%, transparent 70%);
+}
+
+/* Use case card */
+.usecase-card {
+  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(135deg, rgba(17, 24, 32, 0.8) 0%, rgba(11, 15, 20, 0.9) 100%);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.usecase-card:hover {
+  border-color: rgba(56, 189, 248, 0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(56, 189, 248, 0.08);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0F14;
+}
+::-webkit-scrollbar-thumb {
+  background: #1E2A38;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #253244;
+}
+
+/* Selection */
+::selection {
+  background: rgba(56, 189, 248, 0.2);
+  color: #E2E8F0;
+}
